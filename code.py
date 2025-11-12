@@ -6,19 +6,29 @@ from docx import Document
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 import subprocess
 import threading
+import os
+import sys
 
-# --- Working directory and output folder ---
-BASE_DIR = Path(r"C:\Users\haama\Desktop\PycharmProjects\Advanced Topics in Python\pdf2word")
+# --- Working directory relative to script location ---
+BASE_DIR = Path(__file__).parent
 OUTPUT_DIR = BASE_DIR / "Output"
 OUTPUT_DIR.mkdir(exist_ok=True)
+
+# --- Check LibreOffice ---
+LIBREOFFICE_PATH = os.environ.get("LIBREOFFICE_PATH") or r"C:\Program Files\LibreOffice\program\soffice.exe"
+if not Path(LIBREOFFICE_PATH).exists():
+    messagebox.showerror("Error",
+                         f"LibreOffice not found at {LIBREOFFICE_PATH}. Please install it or set the environment variable LIBREOFFICE_PATH.")
+    sys.exit(1)
 
 
 # --- Conversion functions ---
 def pdf_to_word(file_path):
-    word_file = OUTPUT_DIR / (file_path.stem + "_converted.docx")
-    cv = Converter(str(file_path))
-    cv.convert(str(word_file), start=0, end=None)
-    cv.close()
+    word_file = OUTPUT_DIR / f"{file_path.stem}_converted.docx"
+    if not file_path.exists():
+        raise FileNotFoundError(f"{file_path} does not exist")
+    with Converter(str(file_path)) as cv:
+        cv.convert(str(word_file), start=0, end=None)
 
     doc = Document(str(word_file))
     for para in doc.paragraphs:
@@ -29,15 +39,16 @@ def pdf_to_word(file_path):
 
 
 def word_to_pdf(file_path):
-    pdf_file = OUTPUT_DIR / (file_path.stem + "_converted.pdf")
-    libreoffice_path = r"C:\Program Files\LibreOffice\program\soffice.exe"
+    pdf_file = OUTPUT_DIR / f"{file_path.stem}_converted.pdf"
+    if not file_path.exists():
+        raise FileNotFoundError(f"{file_path} does not exist")
     subprocess.run([
-        libreoffice_path,
+        LIBREOFFICE_PATH,
         "--headless",
         "--convert-to", "pdf",
         str(file_path),
         "--outdir", str(OUTPUT_DIR)
-    ])
+    ], check=True)
     return pdf_file
 
 
