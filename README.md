@@ -11,6 +11,9 @@ It also handles **Arabic text alignment** and provides a simple **GUI**.
 - Saves all converted files in an **Output** folder.
 - Shows **progress bar** during conversion.
 - GUI built with **Tkinter**, responsive during processing.
+- Uses **relative paths** and environment variable for LibreOffice.
+- Checks existence of LibreOffice and input files before conversion.
+- Uses `with` statement when opening PDF files for safety.
 
 ## Requirements
 
@@ -23,6 +26,7 @@ It also handles **Arabic text alignment** and provides a simple **GUI**.
   ```
   C:\Program Files\LibreOffice\program\soffice.exe
   ```
+  Or set the environment variable `LIBREOFFICE_PATH` to your LibreOffice path.
 
 ## Installation
 
@@ -30,15 +34,12 @@ It also handles **Arabic text alignment** and provides a simple **GUI**.
 2. Open a terminal in the project folder.
 3. Install required libraries:
    ```bash
-   pip install pdf2docx python-docx
+   pip install -r requirements.txt
    ```
 
 ## Usage
 
-1. Place all PDF and Word files you want to convert inside the project folder:  
-   ```
-   C:\Users\haama\Desktop\PycharmProjects\Advanced Topics in Python\pdf2word
-   ```
+1. Place all PDF and Word files you want to convert inside the project folder.
 2. Run the main Python script:
    ```bash
    python main.py
@@ -51,6 +52,7 @@ It also handles **Arabic text alignment** and provides a simple **GUI**.
 - PDF → Word conversion keeps text and paragraphs; images are converted approximately.
 - Word → PDF conversion uses LibreOffice, no Microsoft Word required.
 - Arabic text alignment is adjusted automatically in Word.
+- Make sure LibreOffice path is correct or set via `LIBREOFFICE_PATH` environment variable.
 
 ## License
 
